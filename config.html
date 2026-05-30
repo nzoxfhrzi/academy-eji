@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Academy Eji - Tentang Kami</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── COLOR PALETTE & VARIABLES ── */
+:root {
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  --primary-dark: #1d4ed8;
+  --accent: #f97316;
+  --success: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --sidebar-w: 260px;
+  --header-h: 70px;
+  --radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Light Theme */
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #e2e8f0;
+  --ink: #0f172a;
+  --ink2: #334155;
+  --ink3: #64748b;
+  --ink4: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --border: #334155;
+  --ink: #f8fafc;
+  --ink2: #cbd5e1;
+  --ink3: #94a3b8;
+  --ink4: #64748b;
+  --primary-light: #1e3a8a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5);
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w); min-height: 100vh; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; z-index: 50; transition: transform 0.3s ease, background 0.3s;
+}
+.sidebar-logo {
+  height: var(--header-h); display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), #60a5fa);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+}
+.logo-text { font-size: 18px; font-weight: 700; color: var(--ink); letter-spacing: -0.5px; }
+.logo-text span { color: var(--primary); }
+
+.sidebar-scroll { flex: 1; overflow-y: auto; padding-top: 10px; }
+.sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.sidebar-section { padding: 16px 24px 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink4); }
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 10px;
+  cursor: pointer; color: var(--ink2); font-size: 14px; font-weight: 500;
+  transition: var(--transition); margin: 4px 12px; text-decoration: none;
+}
+.nav-item:hover { background: var(--surface2); color: var(--ink); transform: translateX(4px); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item .nav-icon { font-size: 20px; flex-shrink: 0; }
+
+.sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
+.user-profile { display: flex; align-items: center; gap: 12px; }
+.user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary); }
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.user-role { font-size: 11px; color: var(--ink3); }
+
+/* ── WRAPPER & TOPBAR ── */
+#wrapper { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.3s ease; }
+
+#topbar {
+  height: var(--header-h); background: rgba(var(--surface), 0.8); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 30px; position: sticky; top: 0; z-index: 40; transition: background 0.3s;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.page-title { font-size: 18px; font-weight: 600; color: var(--ink); }
+.breadcrumb { font-size: 13px; color: var(--ink4); display: flex; align-items: center; gap: 6px; }
+
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.search-box {
+  display: flex; align-items: center; gap: 10px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px;
+  transition: var(--transition); width: 250px;
+}
+.search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); width: 280px; }
+.search-box input { border: none; background: transparent; font-family: 'Sora', sans-serif; font-size: 13px; color: var(--ink); outline: none; width: 100%; }
+.search-box i { color: var(--ink4); font-size: 18px; }
+
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--ink2); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; cursor: pointer; transition: var(--transition);
+}
+.icon-btn:hover { background: var(--bg); color: var(--primary); transform: translateY(-2px); }
+
+/* ── MAIN CONTENT (TENTANG KAMI) ── */
+#main { padding: 30px; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+/* ANIMATION */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-up { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* HERO BANNER */
+.about-hero {
+  background: linear-gradient(135deg, var(--primary), #60a5fa);
+  border-radius: var(--radius);
+  padding: 40px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.about-hero::after {
+  content: ''; position: absolute; top: -50%; right: -10%; width: 300px; height: 300px;
+  background: rgba(255,255,255,0.1); border-radius: 50%; blur: 20px;
+}
+.about-hero-title { font-family: 'Lora', serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; z-index: 1; }
+.about-hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 20px; max-width: 600px; line-height: 1.6; z-index: 1; }
+.version-badge {
+  background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); padding: 6px 16px;
+  border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 1px; z-index: 1;
+}
+
+/* SECTION TITLE */
+.section-head { display: flex; align-items: center; margin-bottom: 24px; gap: 12px; }
+.section-head h2 { font-size: 20px; font-weight: 600; color: var(--ink); }
+.section-line { height: 2px; flex: 1; background: var(--border); }
+
+/* TEAM GRID */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.team-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 30px 20px; text-align: center; box-shadow: var(--shadow-sm);
+  transition: var(--transition); display: flex; flex-direction: column; align-items: center;
+}
+.team-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+.team-avatar {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--surface2);
+  display: flex; align-items: center; justify-content: center; font-size: 40px;
+  color: var(--primary); margin-bottom: 16px; border: 4px solid var(--bg);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.team-card.creator .team-avatar { background: rgba(249,115,22,0.1); color: var(--accent); }
+.team-name { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.team-role { font-size: 13px; color: var(--ink3); font-weight: 500; background: var(--bg); padding: 4px 12px; border-radius: 12px; }
+
+/* TECH GRID */
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.tech-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.tech-card:hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-4px); }
+.tech-icon { font-size: 28px; color: var(--ink2); transition: color 0.3s; }
+.tech-card:hover .tech-icon { color: var(--primary); }
+.tech-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+#sidebar-toggle { display: none; background: transparent; border: none; font-size: 28px; cursor: pointer; color: var(--ink); }
+#sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 49; backdrop-filter: blur(2px); }
+
+@media(max-width: 992px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay.open { display: block; }
+  #wrapper { margin-left: 0; }
+  #sidebar-toggle { display: block; }
+}
+@media(max-width: 768px) {
+  .search-box { display: none; }
+  .about-hero { padding: 30px 20px; }
+  .about-hero-title { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class='bx bxs-graduation'></i></div>
+    <div class="logo-text">Academy<span>Eji.</span></div>
+  </div>
+  <div class="sidebar-scroll">
+    <div class="sidebar-section">Menu Utama</div>
+      <a class="nav-item" href="index.html">
+        <i class='bx bx-home-alt nav-icon'></i> Dashboard
+      </a>
+      <a class="nav-item" href="article-landing.html">
+        <i class='bx bx-news nav-icon'></i> Artikel &amp; Wawasan
+      </a>
+    <a class="nav-item" href="prompt/index.html"><i class='bx bx-bot nav-icon'></i> Tools & Prompt AI</a>
+    <a class="nav-item" href="ujicoba/index.html"><i class='bx bx-trophy nav-icon'></i> Kelas Uji Coba</a>
+    <a class="nav-item active" href="config.html"><i class='bx bx-info-circle nav-icon'></i> Tentang Kami</a>
+    <div class="sidebar-section" style="margin-top: 15px;">Manajemen</div>
+    <a class="nav-item" href="admin.html"><i class='bx bx-user-pin nav-icon'></i> Admin Panel</a>
+    <a class="nav-item" href="ujicoba/admin-soal.html"><i class='bx bx-edit nav-icon'></i> Kelola Soal</a>
+    <div class="sidebar-section" style="margin-top: 15px;">Analitik</div>
+    <a class="nav-item" href="analytics.html"><i class='bx bx-bar-chart-alt-2 nav-icon'></i> Traffic Klik</a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-profile">
+      <div class="user-avatar"><i class='bx bxs-user'></i></div>
+      <div class="user-info">
+        <span class="user-name">Enzo Fahrezi</span>
+        <span class="user-role">Creator</span>
+      </div>
+    </div>
+  </div>
+</nav>
+<div id="sidebar-overlay"></div>
+
+<div id="wrapper">
+  <div id="topbar">
+    <div class="topbar-left">
+      <button id="sidebar-toggle"><i class='bx bx-menu'></i></button>
+      <div>
+        <div class="page-title">Tentang Kami</div>
+        <div class="breadcrumb">Beranda <i class='bx bx-chevron-right'></i> Tentang Kami</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <i class='bx bx-search'></i>
+        <input type="text" id="search-input" placeholder="Cari...">
+      </div>
+      <button class="icon-btn" id="theme-toggle" title="Toggle Dark Mode">
+        <i class='bx bx-moon'></i>
+      </button>
+      <button class="icon-btn" title="Notifikasi">
+        <i class='bx bx-bell'></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="main">
+    
+    <div class="about-hero animate-up">
+      <h1 class="about-hero-title">Academy Eji</h1>
+      <p class="about-hero-subtitle">Platform Kelas Online inovatif yang dirancang untuk memberikan pengalaman belajar terbaik dengan antarmuka modern dan interaktif.</p>
+      <span class="version-badge">VERSI 2.1.0 BETA</span>
+    </div>
+
+    <div class="section-head animate-up delay-1">
+      <i class='bx bx-group' style="font-size: 24px; color: var(--primary);"></i>
+      <h2>Tim Kami</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="team-grid animate-up delay-2">
+      <div class="team-card creator">
+        <div class="team-avatar"><i class='bx bxs-face'></i></div>
+        <h3 class="team-name">Enzo Fahrezi</h3>
+        <span class="team-role">Creator & Developer</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar"><i class='bx bx-user'></i></div>
+        <h3 class="team-name">Ilham</h3>
+        <span class="team-role">Anggota Tim</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar"><i class='bx bx-user'></i></div>
+        <h3 class="team-name">Novia Savira</h3>
+        <span class="team-role">Anggota Tim</span>
+      </div>
+    </div>
+
+    <div class="section-head animate-up delay-3">
+      <i class='bx bx-chip' style="font-size: 24px; color: var(--accent);"></i>
+      <h2>Didukung Oleh</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="tech-grid animate-up delay-4">
+      <div class="tech-card">
+        <i class='bx bx-bot tech-icon'></i>
+        <span class="tech-name">Gemini AI</span>
+      </div>
+      <div class="tech-card">
+        <i class='bx bx-brain tech-icon'></i>
+        <span class="tech-name">Claude</span>
+      </div>
+      <div class="tech-card">
+        <i class='bx bxs-palette tech-icon'></i>
+        <span class="tech-name">Canva</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// --- TEMA (DARK/LIGHT MODE) ---
+const themeToggle = document.getElementById('theme-toggle');
+const htmlEl = document.documentElement;
+
+// Cek preferensi user di localStorage
+if (localStorage.getItem('theme') === 'dark') {
+  htmlEl.setAttribute('data-theme', 'dark');
+  themeToggle.innerHTML = "<i class='bx bx-sun'></i>";
+}
+
+themeToggle.addEventListener('click', () => {
+  if (htmlEl.getAttribute('data-theme') === 'dark') {
+    htmlEl.setAttribute('data-theme', 'light');
+    themeToggle.innerHTML = "<i class='bx bx-moon'></i>";
+    localStorage.setItem('theme', 'light');
+  } else {
+    htmlEl.setAttribute('data-theme', 'dark');
+    themeToggle.innerHTML = "<i class='bx bx-sun'></i>";
+    localStorage.setItem('theme', 'dark');
+  }
+});
+
+/* ── SIDEBAR MOBILE ── */
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+});
+document.getElementById('sidebar-overlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+});
+</script>
+</body>
+</html>

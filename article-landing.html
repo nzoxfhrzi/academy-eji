@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Academy Eji - Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── COLOR PALETTE & VARIABLES ── */
+:root {
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  --primary-dark: #1d4ed8;
+  --accent: #f97316;
+  --success: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --sidebar-w: 260px;
+  --header-h: 70px;
+  --radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Light Theme */
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #e2e8f0;
+  --ink: #0f172a;
+  --ink2: #334155;
+  --ink3: #64748b;
+  --ink4: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --border: #334155;
+  --ink: #f8fafc;
+  --ink2: #cbd5e1;
+  --ink3: #94a3b8;
+  --ink4: #64748b;
+  --primary-light: #1e3a8a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5);
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w); min-height: 100vh; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; z-index: 50; transition: transform 0.3s ease, background 0.3s;
+}
+.sidebar-logo {
+  height: var(--header-h); display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), #60a5fa);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+}
+.logo-text { font-size: 18px; font-weight: 700; color: var(--ink); letter-spacing: -0.5px; }
+.logo-text span { color: var(--primary); }
+
+.sidebar-scroll { flex: 1; overflow-y: auto; padding-top: 10px; }
+.sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.sidebar-section { padding: 16px 24px 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink4); }
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 10px;
+  cursor: pointer; color: var(--ink2); font-size: 14px; font-weight: 500;
+  transition: var(--transition); margin: 4px 12px; text-decoration: none;
+}
+.nav-item:hover { background: var(--surface2); color: var(--ink); transform: translateX(4px); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item .nav-icon { font-size: 20px; flex-shrink: 0; }
+
+.sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
+.user-profile { display: flex; align-items: center; gap: 12px; }
+.user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary); }
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.user-role { font-size: 11px; color: var(--ink3); }
+
+/* ── WRAPPER & TOPBAR ── */
+#wrapper { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.3s ease; }
+
+#topbar {
+  height: var(--header-h); background: rgba(var(--surface), 0.8); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 30px; position: sticky; top: 0; z-index: 40; transition: background 0.3s;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.page-title { font-size: 18px; font-weight: 600; color: var(--ink); }
+.breadcrumb { font-size: 13px; color: var(--ink4); display: flex; align-items: center; gap: 6px; }
+
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.search-box {
+  display: flex; align-items: center; gap: 10px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px;
+  transition: var(--transition); width: 250px;
+}
+.search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); width: 280px; }
+.search-box input { border: none; background: transparent; font-family: 'Sora', sans-serif; font-size: 13px; color: var(--ink); outline: none; width: 100%; }
+.search-box i { color: var(--ink4); font-size: 18px; }
+
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--ink2); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; cursor: pointer; transition: var(--transition);
+}
+.icon-btn:hover { background: var(--bg); color: var(--primary); transform: translateY(-2px); }
+
+/* ── MAIN CONTENT ── */
+#main { padding: 30px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+/* ── STATS ROW ── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.stat-val { font-size: 24px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.stat-label { font-size: 12px; color: var(--ink3); font-weight: 500; }
+
+/* ── FILTER & HEADER ── */
+.filter-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--surface); font-family: 'Sora', sans-serif; font-size: 13px;
+  font-weight: 500; color: var(--ink2); cursor: pointer; transition: var(--transition);
+}
+.filter-chip:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+.filter-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(37,99,235,0.2); }
+
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.section-head h2 { font-size: 18px; font-weight: 600; color: var(--ink); }
+.view-toggle { display: flex; gap: 6px; background: var(--surface); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
+.vt-btn { width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--ink3); transition: var(--transition); }
+.vt-btn.active, .vt-btn:hover { background: var(--primary-light); color: var(--primary); }
+
+/* ── GRID & CARDS ── */
+#articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+#articles-grid.list-view { grid-template-columns: 1fr; }
+
+.a-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);
+  position: relative; cursor: pointer; display: flex; flex-direction: column;
+}
+.a-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+.a-card-img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid var(--border); }
+.a-card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.a-card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.kat-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+.a-date { font-size: 12px; color: var(--ink4); margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.a-card-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 10px; transition: color 0.2s; }
+.a-card:hover .a-card-title { color: var(--primary); }
+.a-card-desc { font-size: 13px; color: var(--ink3); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
+.a-card-footer { margin-top: auto; border-top: 1px solid var(--border); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; color: var(--primary); font-size: 13px; font-weight: 500; }
+
+.featured-ribbon { position: absolute; top: 12px; left: 12px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(249,115,22,0.4); z-index: 2; }
+
+/* List View overrides */
+#articles-grid.list-view .a-card { flex-direction: row; align-items: center; }
+#articles-grid.list-view .a-card-img { width: 280px; height: 200px; border-bottom: none; border-right: 1px solid var(--border); }
+
+/* Skeleton Loader */
+.skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 4px; }
+@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── MODAL ── */
+#modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: all 0.3s ease; backdrop-filter: blur(5px);
+}
+#modal-overlay.open { opacity: 1; pointer-events: all; }
+
+#modal {
+  background: var(--surface); border-radius: 20px; box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 720px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+  transform: translateY(30px) scale(0.95); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#modal-overlay.open #modal { transform: translateY(0) scale(1); }
+
+.modal-header-img { position: relative; width: 100%; height: 260px; }
+#modal-img { width: 100%; height: 100%; object-fit: cover; }
+#modal-x {
+  position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(0,0,0,0.5); color: #fff; border: none; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s;
+}
+#modal-x:hover { background: var(--danger); }
+
+#modal-content { padding: 30px; overflow-y: auto; flex: 1; }
+#modal-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+#modal-title { font-family: 'Lora', serif; font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 16px; }
+#modal-desc { font-size: 15px; color: var(--ink2); line-height: 1.8; font-weight: 400; }
+
+#modal-footer {
+  padding: 20px 30px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 12px; background: var(--surface2);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px;
+  font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: var(--transition);
+}
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--ink2); }
+.btn-outline:hover { background: var(--border); color: var(--ink); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+/* ── RESPONSIVE ── */
+#sidebar-toggle { display: none; background: transparent; border: none; font-size: 28px; cursor: pointer; color: var(--ink); }
+#sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 49; backdrop-filter: blur(2px); }
+
+@media(max-width: 992px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay.open { display: block; }
+  #wrapper { margin-left: 0; }
+  #sidebar-toggle { display: block; }
+}
+@media(max-width: 768px) {
+  .search-box { display: none; }
+  #articles-grid.list-view .a-card { flex-direction: column; }
+  #articles-grid.list-view .a-card-img { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  #modal-title { font-size: 22px; }
+  .modal-header-img { height: 200px; }
+}
+@media(max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  #topbar { padding: 0 20px; }
+  #main { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class='bx bxs-graduation'></i></div>
+    <div class="logo-text">Academy<span>Eji.</span></div>
+  </div>
+  <div class="sidebar-scroll">
+    <div class="sidebar-section">Menu Utama</div>
+    <a class="nav-item" href="index.html"><i class='bx bx-home-alt nav-icon'></i> Dashboard</a>
+    <a class="nav-item active" href="article-landing.html"><i class='bx bx-news nav-icon'></i> Artikel & Wawasan</a>
+    <a class="nav-item" href="prompt/index.html"><i class='bx bx-bot nav-icon'></i> Tools & Prompt AI</a>
+    <a class="nav-item" href="referensi/index.html"><i class='bx bx-book-open nav-icon'></i> Referensi &amp; Ebook</a>
+    <a class="nav-item" href="ujicoba/index.html"><i class='bx bx-trophy nav-icon'></i> Kelas Uji Coba</a>
+    <a class="nav-item" href="config.html"><i class='bx bx-info-circle nav-icon'></i> Tentang Kami</a>
+      <a class="nav-item" id="nav-upgrade-vip" href="premium/index.html" style="color:#d97706;display:none;"><i class='bx bxs-crown nav-icon'></i> Upgrade Premium</a>
+    <div class="sidebar-section" style="margin-top: 15px;">Manajemen</div>
+    <a class="nav-item" href="admin.html"><i class='bx bx-user-pin nav-icon'></i> Admin Panel</a>
+    <a class="nav-item" href="ujicoba/admin-soal.html"><i class='bx bx-edit nav-icon'></i> Kelola Soal</a>
+    <div class="sidebar-section" style="margin-top: 15px;">Analitik</div>
+    <a class="nav-item" href="analytics.html"><i class='bx bx-bar-chart-alt-2 nav-icon'></i> Traffic Klik</a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-profile">
+      <div class="user-avatar"><i class='bx bxs-user'></i></div>
+      <div class="user-info">
+        <span class="user-name" id="sidebar-username">Memuat...</span>
+        <span class="user-role" id="sidebar-role">—</span>
+      </div>
+      <button id="logout-btn" title="Keluar" style="display:none;background:none;border:none;cursor:pointer;color:var(--ink3);font-size:18px;padding:4px;margin-left:auto;" onclick="Auth.logout()"><i class='bx bx-log-out'></i></button>
+    </div>
+  </div>
+</nav>
+<div id="sidebar-overlay"></div>
+
+<div id="wrapper">
+  <div id="topbar">
+    <div class="topbar-left">
+      <button id="sidebar-toggle"><i class='bx bx-menu'></i></button>
+      <div>
+        <div class="page-title">Dashboard Academy Eji</div>
+        <div class="breadcrumb">Beranda <i class='bx bx-chevron-right'></i> Artikel</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <i class='bx bx-search'></i>
+        <input type="text" id="search-input" placeholder="Cari artikel...">
+      </div>
+      <button class="icon-btn" id="theme-toggle" title="Toggle Dark Mode">
+        <i class='bx bx-moon'></i>
+      </button>
+      <button class="icon-btn" title="Notifikasi">
+        <i class='bx bx-bell'></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(37,99,235,0.1); color: var(--primary)"><i class='bx bx-file'></i></div>
+        <div><div class="stat-val" id="s-total">0</div><div class="stat-label">Total Artikel</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(249,115,22,0.1); color: var(--accent)"><i class='bx bx-star'></i></div>
+        <div><div class="stat-val" id="s-feat">0</div><div class="stat-label">Artikel Unggulan</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16,185,129,0.1); color: var(--success)"><i class='bx bx-purchase-tag-alt'></i></div>
+        <div><div class="stat-val" id="s-kat">0</div><div class="stat-label">Total Kategori</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245,158,11,0.1); color: var(--warn)"><i class='bx bx-calendar-edit'></i></div>
+        <div><div class="stat-val" id="s-last" style="font-size:18px; margin-top:4px;">-</div><div class="stat-label">Terakhir Update</div></div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2 id="section-label">Memuat Artikel...</h2>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="vt-grid" title="Grid View"><i class='bx bx-grid-alt'></i></button>
+        <button class="vt-btn" id="vt-list" title="List View"><i class='bx bx-list-ul'></i></button>
+      </div>
+    </div>
+
+    <div id="articles-grid">
+      </div>
+  </div>
+</div>
+
+<div id="modal-overlay">
+  <div id="modal">
+    <div class="modal-header-img">
+      <img id="modal-img" src="" alt="Thumbnail">
+      <button id="modal-x" onclick="closeModal()"><i class='bx bx-x'></i></button>
+    </div>
+    <div id="modal-content">
+      <div id="modal-meta">
+        <span id="modal-kat" class="kat-badge"></span>
+        <span id="modal-date" style="font-size:13px; color:var(--ink4)"><i class='bx bx-time-five'></i> <span id="m-date-text"></span></span>
+        <span id="modal-featured" class="featured-ribbon" style="position:static; display:none;"><i class='bx bxs-star'></i> Unggulan</span>
+      </div>
+      <div id="modal-title"></div>
+      <div id="modal-desc"></div>
+    </div>
+    <div id="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Tutup</button>
+      <button class="btn btn-primary" id="modal-copy-btn" onclick="copyDesc()"><i class='bx bx-copy'></i> Salin Konten</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- TEMA (DARK/LIGHT MODE) ---
+const themeToggle = document.getElementById('theme-toggle');
+const htmlEl = document.documentElement;
+
+// Cek preferensi user di localStorage
+if (localStorage.getItem('theme') === 'dark') {
+  htmlEl.setAttribute('data-theme', 'dark');
+  themeToggle.innerHTML = "<i class='bx bx-sun'></i>";
+}
+
+themeToggle.addEventListener('click', () => {
+  if (htmlEl.getAttribute('data-theme') === 'dark') {
+    htmlEl.setAttribute('data-theme', 'light');
+    themeToggle.innerHTML = "<i class='bx bx-moon'></i>";
+    localStorage.setItem('theme', 'light');
+  } else {
+    htmlEl.setAttribute('data-theme', 'dark');
+    themeToggle.innerHTML = "<i class='bx bx-sun'></i>";
+    localStorage.setItem('theme', 'dark');
+  }
+});
+
+// --- DATA & LOGIC ---
+let DB = { kategori:[], artikel:[] };
+let activeKat = 'all';
+let searchQ = '';
+let viewMode = 'grid';
+
+// Data Dummy Fallback (Jika API gagal dimuat)
+const DUMMY_DATA = {
+  kategori: [
+    { id: 'k1', nama: 'Pemrograman', warna: '#2563eb' },
+    { id: 'k2', nama: 'Desain UI/UX', warna: '#ec4899' },
+    { id: 'k3', nama: 'Teknologi', warna: '#10b981' }
+  ],
+  artikel: [
+    { id: 'a1', judul: 'Memahami Konsep Dasar React JS di Tahun 2024', deskripsi: 'React JS masih menjadi primadona di kalangan developer. Artikel ini membahas konsep dasar komponen, state, dan props yang wajib kamu kuasai.', kategori_id: 'k1', tanggal: '2024-05-20', featured: true, gambar: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=600&q=80' },
+    { id: 'a2', judul: 'Prinsip Gestalt dalam Desain Antarmuka', deskripsi: 'Pentingnya memahami bagaimana mata manusia memproses informasi visual. Pelajari hukum kedekatan, kesamaan, dan kontinuitas dalam UI Design.', kategori_id: 'k2', tanggal: '2024-05-18', featured: false, gambar: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80' },
+    { id: 'a3', judul: 'Mengenal Artificial Intelligence (AI) Generatif', deskripsi: 'Dunia teknologi digemparkan oleh AI yang bisa membuat teks, gambar, hingga video. Apa dampaknya bagi industri kreatif masa depan?', kategori_id: 'k3', tanggal: '2024-05-15', featured: true, gambar: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80' },
+    { id: 'a4', judul: 'Belajar CSS Flexbox dan CSS Grid', deskripsi: 'Panduan lengkap mengatur layout website agar responsif di segala perangkat tanpa perlu banyak pusing menggunakan float.', kategori_id: 'k1', tanggal: '2024-05-10', featured: false, gambar: 'https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?auto=format&fit=crop&w=600&q=80' },
+  ]
+};
+
+async function loadData() {
+  showSkeleton();
+  try {
+    const res = await fetch('/api/get-data');
+    if(!res.ok) throw new Error('API tidak ditemukan');
+    const data = await res.json();
+    DB = data;
+  } catch(e) {
+    console.warn("Menggunakan data dummy karena API gagal dimuat.");
+    DB = DUMMY_DATA; // Fallback ke data dummy
+  }
+  setTimeout(render, 500); // Simulasi waktu loading
+}
+
+function showSkeleton() {
+  const grid = document.getElementById('articles-grid');
+  grid.innerHTML = Array(4).fill(0).map(() => `
+    <div class="a-card" style="height: 350px;">
+      <div class="skeleton" style="height:180px; width:100%"></div>
+      <div class="a-card-body">
+        <div class="skeleton" style="height:14px; width:40%; margin-bottom:12px;"></div>
+        <div class="skeleton" style="height:20px; width:90%; margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:20px; width:70%; margin-bottom:16px;"></div>
+        <div class="skeleton" style="height:40px; width:100%; margin-top:auto;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getKat(id) { return DB.kategori.find(k=>k.id===id) || {nama:'Umum', warna:'#64748b'}; }
+function fmtDate(s) {
+  if(!s) return '';
+  return new Date(s).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function render() {
+  // Stats
+  const dates = DB.artikel.map(a=>a.tanggal).filter(Boolean).sort().reverse();
+  document.getElementById('s-last').textContent = dates[0] ? fmtDate(dates[0]) : '-';
+
+  // Hanya tampilkan kategori "Artikel"
+  const katArtikel = DB.kategori.find(k => k.nama === 'Artikel');
+
+  // Filter Data: hanya artikel berkategori "Artikel"
+  let arts = DB.artikel.slice();
+  if(katArtikel) arts = arts.filter(a => a.kategori_id === katArtikel.id);
+  if(searchQ) arts = arts.filter(a => (a.judul+a.deskripsi).toLowerCase().includes(searchQ));
+
+  // Update Stats khusus artikel
+  document.getElementById('s-total').textContent = arts.length;
+  document.getElementById('s-feat').textContent = arts.filter(a=>a.featured).length;
+
+  // Update Title
+  document.getElementById('section-label').textContent = `Artikel (${arts.length})`;
+
+  // Render Grid
+  const grid = document.getElementById('articles-grid');
+  if(!arts.length) { 
+    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--ink3);">
+      <i class='bx bx-folder-open' style="font-size:48px; margin-bottom:10px; opacity:0.5;"></i><br>Belum ada artikel ditemukan.</div>`; 
+    return; 
+  }
+
+  grid.innerHTML = arts.map((a,i) => {
+    const k = getKat(a.kategori_id);
+    return `
+    <div class="a-card" style="animation: fadeUp 0.4s ease forwards; opacity:0; transform:translateY(20px); animation-delay:${i*0.1}s" data-featured="${a.featured ? 'true' : 'false'}" onclick="openModal('${esc(a.id)}')">
+      ${a.featured ? `<div class="featured-ribbon"><i class='bx bxs-star'></i> Unggulan</div>` : ''}
+      <img class="a-card-img" src="${esc(a.gambar)}" alt="${esc(a.judul)}" loading="lazy">
+      <div class="a-card-body">
+        <div class="a-card-meta">
+          <span class="kat-badge" style="background:${k.warna}15; color:${k.warna}">${esc(k.nama)}</span>
+          <span class="a-date"><i class='bx bx-time-five'></i> ${fmtDate(a.tanggal)}</span>
+        </div>
+        <h3 class="a-card-title">${esc(a.judul)}</h3>
+        <p class="a-card-desc">${esc(a.deskripsi)}</p>
+        <div class="a-card-footer">
+          <span>Baca selengkapnya</span>
+          <i class='bx bx-right-arrow-alt' style="font-size:18px;"></i>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Tambahan keyframes fadeUp
+document.head.insertAdjacentHTML('beforeend', `<style>@keyframes fadeUp{to{opacity:1; transform:translateY(0);}}</style>`);
+
+/* ── MODAL LOGIC ── */
+function openModal(id) {
+  const a = DB.artikel.find(x=>x.id===id);
+  if(!a) return;
+
+  // ── GATE: tamu tidak bisa buka artikel Unggulan ──
+  const user = (typeof Auth !== 'undefined') ? Auth.getUser() : null;
+  if (a.featured && user && user.role !== 'vip') {
+    if (typeof AuthGate !== 'undefined') AuthGate.showVipPopup();
+    return;
+  }
+
+  const k = getKat(a.kategori_id);
+
+  // ── TRACK CLICK: kirim ke /api/track-click ──
+  fetch('/api/track-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      artikel_id: a.id,
+      artikel_judul: a.judul,
+      kategori_id: a.kategori_id
+    })
+  }).catch(() => {}); // silent fail — tidak mengganggu UX
+
+  document.getElementById('modal-img').src = a.gambar;
+  
+  const katEl = document.getElementById('modal-kat');
+  katEl.textContent = k.nama;
+  katEl.style.background = k.warna + '20';
+  katEl.style.color = k.warna;
+
+  document.getElementById('m-date-text').textContent = fmtDate(a.tanggal);
+  document.getElementById('modal-featured').style.display = a.featured ? 'inline-flex' : 'none';
+  document.getElementById('modal-title').textContent = a.judul;
+  document.getElementById('modal-desc').innerHTML = esc(a.deskripsi).replace(/\n/g, '<br>');
+
+  const btn = document.getElementById('modal-copy-btn');
+  btn.innerHTML = "<i class='bx bx-copy'></i> Salin Konten";
+  btn.classList.remove('btn-success');
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyDesc() {
+  // Cek apakah ini konten premium untuk tamu
+  const user = (typeof Auth !== 'undefined') ? Auth.getUser() : null;
+  const isFeatured = document.getElementById('modal-featured') && document.getElementById('modal-featured').style.display !== 'none';
+  if (isFeatured && user && user.role !== 'vip') {
+    if (typeof AuthGate !== 'undefined') AuthGate.showVipPopup();
+    return;
+  }
+  const desc = document.getElementById('modal-desc').innerText;
+  navigator.clipboard.writeText(desc).then(() => {
+    const btn = document.getElementById('modal-copy-btn');
+    btn.innerHTML = "<i class='bx bx-check'></i> Tersalin!";
+    btn.style.background = "var(--success)";
+    setTimeout(() => { 
+      btn.innerHTML="<i class='bx bx-copy'></i> Salin Konten"; 
+      btn.style.background = ""; 
+    }, 2000);
+  });
+}
+
+// Tutup modal jika area luar diklik
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* ── VIEW & SEARCH TOGGLE ── */
+document.getElementById('vt-grid').addEventListener('click', function() {
+  viewMode='grid';
+  document.getElementById('articles-grid').classList.remove('list-view');
+  this.classList.add('active');
+  document.getElementById('vt-list').classList.remove('active');
+});
+document.getElementById('vt-list').addEventListener('click', function() {
+  viewMode='list';
+  document.getElementById('articles-grid').classList.add('list-view');
+  this.classList.add('active');
+  document.getElementById('vt-grid').classList.remove('active');
+});
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQ = e.target.value.toLowerCase().trim(); 
+  render();
+});
+
+/* ── SIDEBAR MOBILE ── */
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+});
+document.getElementById('sidebar-overlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+});
+
+// Jalankan App
+loadData();
+</script>
+<script src="auth.js"></script>
+<script src="auth-gate.js"></script>
+</body>
+</html>
